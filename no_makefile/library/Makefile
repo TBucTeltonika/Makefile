@@ -1,33 +1,22 @@
 CC:=gcc
 BIN:=main
-Libpath=$(shell pwd)
 
-#export LD_LIBRARY_PATH
-#nepavyko su LD_LIBRARY_PATH nezinau kodel bandziau ivairius budus bet kazkaip vis nerasdavo to .so failo.
-#ikelus faila tiesiai i usr/local/bin problemu nebuvo.
-#kodas truputi nesvarus nes palikau kas nepavyko.
+SOSRC?=file_reader.c
+SONAME?=file_reader.so
+SRC?=main.c
 
-.PHONY : all clean addlibpath run
+#Norint paleisti reikia naudoti: "LD_LIBRARY_PATH=`pwd` ./main"
 
-all: library addlibpath program  run
-#	@echo $("kompiliuojama")
+.PHONY : all clean
+
+all: library program
+	@echo 'Norint paleisti reikia naudoti: "LD_LIBRARY_PATH=`pwd` ./$(BIN)'
 
 library:
-#	$(CC) -Wall -g -c file_reader.c -o file_reader.o
-	$(CC) -shared -fPIC -o file_reader.so file_reader.c -Wl,-soname,/usr/local/lib/file_reader.so
+	$(CC) -shared -fPIC  $(SOSRC) -Wl,-soname,$(SONAME) -o $(SONAME)
 
 program: 
-	gcc main.c /usr/local/lib/file_reader.so -o $(BIN)
-#	$(CC)  -Wall main.c  -o $(BIN) file_reader.o
-
-addlibpath:
-	LD_LIBRARY_PATH=$(Libpath)
-#ldconfig
-	@echo $(LD_LIBRARY_PATH)
-	
-
-run:
-	./main
+	gcc $(SRC) $(SONAME) -o $(BIN)
 
 clean:
 	rm -f $(BIN) *.so

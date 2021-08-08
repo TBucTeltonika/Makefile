@@ -3,19 +3,19 @@ CFLAGS:=-Wall
 CPPFLAGS:=-I$(PWD)
 
 BIN:=math
-SRC:=$(wildcard *.c)
+SRC=$(wildcard *.c)
 OBJS:=$(SRC:.c=.o)
 
 .PHONY: all clean
 
 all: $(BIN)
-	@echo $(OBJS)
+#	@echo $(OBJS)
 
-$(BIN): main.o maths.o usage.o
+$(BIN): $(OBJS)
 	$(CC) -o $@ $^ $(LDFLAGS)
 
-%.o: %.clean
-	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $^
+OBJ: 
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $(SRC)
 
 clean:
 	rm -f $(BIN) $(OBJS)
